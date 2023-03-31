@@ -1,9 +1,9 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { useForm } from '../../hooks/useForm';
 import { DELAY_IN_MS } from '../../constants/delays';
-import {  ReverseString } from './utils';
+import { getElementState, ReverseString } from './utils';
 import type { TReverseStringResult } from '../../types';
-import { ElementStates, TGetElementState } from "../../types";
+
 import { Input } from '../ui/input/input';
 import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
@@ -13,11 +13,16 @@ import styles from './string.module.css';
 export const StringComponent: FC = () => {
  
   const rangeRef = useRef(new ReverseString<string>());
-  const { values, handleChange, clearValue } = useForm({ range: '' });
+  /*const { values, handleChange, clearValue } = useForm({ range: '' });
   const range =
     typeof values['range'] !== 'string'
       ? String(values['range'])
-      : values['range'];
+      : values['range'];*/
+      const { values, handleChange, clearValue } = useForm({
+        range: { value: '' },
+      });
+      const range = values['range'].value;
+      
   const [result, setResult] = useState<TReverseStringResult>([]);
   const [loader, setLoader] = useState<boolean>(false);
   const timerId = useRef<NodeJS.Timeout>();
@@ -66,25 +71,7 @@ export const StringComponent: FC = () => {
     }
   };
 
-  const getElementState = ({
-    itemIndex,
-    startPosition,
-    endPosition,
-    isReversed,
-    timerLaunched,
-  }: TGetElementState): ElementStates => {
-    if (itemIndex === startPosition || itemIndex === endPosition) {
-      if (isReversed) {
-        return ElementStates.Modified;
-      } else {
-        return timerLaunched ? ElementStates.Changing : ElementStates.Default;
-      }
-    }
-      if (itemIndex < startPosition || itemIndex > endPosition) {
-      return ElementStates.Modified;
-    }
-      return ElementStates.Default;
-  };
+  
 
   useEffect(() => {
     return () => {

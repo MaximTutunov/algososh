@@ -13,11 +13,17 @@ import styles from "./stack-page.module.css";
 
 export const StackPage: FC = () => {
   const stackRef = useRef(new Stack());
-  const { values, handleChange, clearValue } = useForm({ value: "" });
+ /* const { values, handleChange, clearValue } = useForm({ value: "" });
   const value =
     typeof values["value"] !== "string"
       ? String(values["value"])
-      : values["value"];
+      : values["value"];*/
+
+      const { values, handleChange, clearValue } = useForm({
+        chars: { value: '' },
+      });
+      const value = values['chars'].value;
+
   const [result, setResult] = useState<string[]>([]);
   const [action, setAction] = useState<Functions>(Functions.Waiting);
   const [loader, setLoader] = useState<boolean>(false);
@@ -33,7 +39,7 @@ export const StackPage: FC = () => {
     stackRef.current.push(value);
     setCurr(stackRef.current.lastIndex);
     setAction(Functions.AddToTail);
-    clearValue("value");
+    clearValue("chars");
     showResult();
 
     await setDelay(DELAY_IN_MS);
@@ -59,7 +65,7 @@ export const StackPage: FC = () => {
   };
 
   const handleClearClick = () => {
-    clearValue("value");
+    clearValue("chars");
     stackRef.current.clear();
     showResult();
   };
@@ -73,13 +79,14 @@ export const StackPage: FC = () => {
             maxLength={4}
             isLimitText={true}
             value={value}
-            name={"value"}
+            name={"chars"}
             onChange={handleChange}
             disabled={loader}
           />
           <Button
             type={"button"}
             text={"Добавить"}
+            name={'add'}
             onClick={handleAddClick}
             isLoader={loader && action === Functions.AddToTail}
             disabled={
@@ -89,6 +96,7 @@ export const StackPage: FC = () => {
           <Button
             type={"button"}
             text={"Удалить"}
+            name={'delete'}
             onClick={handleDeleteClick}
             isLoader={loader && action === Functions.DeleteFromTail}
             disabled={
@@ -100,6 +108,7 @@ export const StackPage: FC = () => {
         <Button
           type={"button"}
           text={"Очистить"}
+          name={'clear'}
           onClick={handleClearClick}
           disabled={loader || result.length === 0}
         />

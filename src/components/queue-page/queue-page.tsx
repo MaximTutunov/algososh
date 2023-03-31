@@ -14,11 +14,17 @@ import styles from './queue-page.module.css';
 export const QueuePage: FC = () => {
 
   const queue = useRef(new Queue(QUEUE_LENGTH));
-  const { values, handleChange, clearValue } = useForm({ value: '' });
+  /*const { values, handleChange, clearValue } = useForm({ value: '' });
   const value =
     typeof values['value'] !== 'string'
       ? String(values['value'])
-      : values['value'];
+      : values['value'];*/
+
+      const { values, handleChange, clearValue } = useForm({
+        chars: { value: '' },
+      });
+      const value = values['chars'].value;
+
   const [result, setResult] = useState<(string | null)[]>(
     new Array(QUEUE_LENGTH).fill(null)
   );
@@ -34,7 +40,7 @@ export const QueuePage: FC = () => {
 
   const displayAddedElQueue = async () => {
     const currentValue = value;
-    clearValue('value');
+    clearValue('chars');
 
     setCurrent(
       queue.current.isEmpty
@@ -83,7 +89,7 @@ export const QueuePage: FC = () => {
   };
 
   const handleClearClick = () => {
-    clearValue('value');
+    clearValue('chars');
     queue.current.clear();
     showResult();
   };
@@ -97,12 +103,13 @@ export const QueuePage: FC = () => {
             maxLength={4}
             isLimitText={true}
             value={value}
-            name={'value'}
+            name={'chars'}
             onChange={handleChange}
             disabled={loader}
           />
           <Button
             type={'button'}
+            name={'add'}
             text={'Добавить'}
             onClick={handleAddClick}
             isLoader={loader && action === Functions.AddToTail}
@@ -114,6 +121,7 @@ export const QueuePage: FC = () => {
           />
           <Button
             type={'button'}
+            name={'delete'}
             text={'Удалить'}
             onClick={handleRemoveClick}
             isLoader={loader && action === Functions.DeleteFromHead}
@@ -126,6 +134,7 @@ export const QueuePage: FC = () => {
         <Button
           type={'button'}
           text={'Очистить'}
+          name={'clear'}
           onClick={handleClearClick}
           disabled={
             loader ||
