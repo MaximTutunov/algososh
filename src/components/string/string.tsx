@@ -1,28 +1,23 @@
-import { FC, useEffect, useRef, useState } from 'react';
-import { useForm } from '../../hooks/useForm';
-import { DELAY_IN_MS } from '../../constants/delays';
-import { getElementState, ReverseString } from './utils';
-import type { TReverseStringResult } from '../../types';
+import { FC, useEffect, useRef, useState } from "react";
+import { useForm } from "../../hooks/useForm";
+import { DELAY_IN_MS } from "../../constants/delays";
+import { getElementState, ReverseString } from "./utils";
+import type { TReverseStringResult } from "../../types";
 
-import { Input } from '../ui/input/input';
-import { Button } from '../ui/button/button';
-import { Circle } from '../ui/circle/circle';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import styles from './string.module.css';
+import { Input } from "../ui/input/input";
+import { Button } from "../ui/button/button";
+import { Circle } from "../ui/circle/circle";
+import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import styles from "./string.module.css";
 
 export const StringComponent: FC = () => {
- 
   const rangeRef = useRef(new ReverseString<string>());
-  /*const { values, handleChange, clearValue } = useForm({ range: '' });
-  const range =
-    typeof values['range'] !== 'string'
-      ? String(values['range'])
-      : values['range'];*/
-      const { values, handleChange, clearValue } = useForm({
-        range: { value: '' },
-      });
-      const range = values['range'].value;
-      
+
+  const { values, handleChange, clearValue } = useForm({
+    range: { value: "" },
+  });
+  const range = values["range"].value;
+
   const [result, setResult] = useState<TReverseStringResult>([]);
   const [loader, setLoader] = useState<boolean>(false);
   const timerId = useRef<NodeJS.Timeout>();
@@ -59,8 +54,8 @@ export const StringComponent: FC = () => {
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    rangeRef.current.range = range.split('');
-    clearValue('range');
+    rangeRef.current.range = range.split("");
+    clearValue("range");
     showCurrentResult();
     if (!rangeRef.current.isReversed) {
       setLoader(true);
@@ -70,8 +65,6 @@ export const StringComponent: FC = () => {
       }, DELAY_IN_MS);
     }
   };
-
-  
 
   useEffect(() => {
     return () => {
@@ -85,17 +78,17 @@ export const StringComponent: FC = () => {
     <SolutionLayout title="Строка">
       <form className={styles.form}>
         <Input
-          name={'range'}
+          name={"range"}
           value={range}
-          type={'text'}
+          type={"text"}
           maxLength={11}
           isLimitText={true}
           onChange={handleChange}
           disabled={loader}
         />
         <Button
-          type={'submit'}
-          text={'Развернуть'}
+          type={"submit"}
+          text={"Развернуть"}
           onClick={handleClick}
           isLoader={loader}
           disabled={!range || range?.length === 0}

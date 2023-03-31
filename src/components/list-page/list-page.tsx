@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Functions  } from "../../types/linkedList-functions";
+import { Functions } from "../../types/linkedList-functions";
 import { ElementStates } from "../../types/element-states";
 import { ButtonPositions as Positions } from "../../types/button-positions";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { Scroll } from '../ui/scroll/scroll';
+import { Scroll } from "../ui/scroll/scroll";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
@@ -45,35 +45,19 @@ export const ListPage: React.FC = () => {
   const [activeCirclePosition, setActiveCirclePosition] = useState<
     Positions | undefined
   >(undefined);
-/*
-  const { values, handleChange, clearValue } = useForm({
-    value: "",
-    index: -1,
-  });*/
 
   const { values, handleChange, clearValue } = useForm({
     chars: {
-      value: ''
+      value: "",
     },
     index: {
-      value: '',
-      onlyDigits: true
-    }
+      value: "",
+      onlyDigits: true,
+    },
   });
-  
-  const chars = values['chars'].value;
-  const index = values['index'].value;
-  
-  /*
-  const value =
-    typeof values["value"] !== "string"
-      ? String(values["value"])
-      : values["value"];
 
-  const index =
-    typeof values["index"] === "string"
-      ? Number.parseInt(values["index"])
-      : values["index"];*/
+  const chars = values["chars"].value;
+  const index = values["index"].value;
 
   const displayResult = () => {
     setResult(
@@ -240,7 +224,10 @@ export const ListPage: React.FC = () => {
   };
 
   const isValidDeleteByIndex = (): boolean | undefined => {
-    return !(Number.parseInt(index) > -1 && Number.parseInt(index) < linkedList.current.listLength);
+    return !(
+      Number.parseInt(index) > -1 &&
+      Number.parseInt(index) < linkedList.current.listLength
+    );
   };
 
   const headListTitle = (index: number) => {
@@ -333,20 +320,19 @@ export const ListPage: React.FC = () => {
           />
           <Button
             type={"button"}
-            name={'addByIndexButton'}
+            name={"addByIndexButton"}
             text={"Добавить по индексу"}
             style={{ minWidth: "362px" }}
             onClick={handleAddByIndex}
             isLoader={loader && action === Functions.AddByIndex}
             disabled={
-              (loader && action !== Functions.AddByIndex) ||
-              isValidAddByIndex()
+              (loader && action !== Functions.AddByIndex) || isValidAddByIndex()
             }
           />
           <Button
             type={"button"}
             text={"Удалить по индексу"}
-            name={'deleteByIndexButton'}
+            name={"deleteByIndexButton"}
             style={{ minWidth: "362px" }}
             onClick={handleDeleteByIndex}
             isLoader={loader && action === Functions.DeleteByIndex}
@@ -358,41 +344,42 @@ export const ListPage: React.FC = () => {
         </fieldset>
       </form>
       <Scroll>
-      <div className={styles.container}>
-        <ul className={styles.list__results}>
-          {result.length > 0 &&
-            result.map((item, index) => {
-              const currentState =
-                modifiedIndex === index
-                  ? ElementStates.Modified
-                  : changingIndex >= index
-                  ? ElementStates.Changing
-                  : ElementStates.Default;
+        <div className={styles.container}>
+          <ul className={styles.list__results}>
+            {result.length > 0 &&
+              result.map((item, index) => {
+                const currentState =
+                  modifiedIndex === index
+                    ? ElementStates.Modified
+                    : changingIndex >= index
+                    ? ElementStates.Changing
+                    : ElementStates.Default;
 
-              const head = headListTitle(index);
-              const tail = tailListTitle(index);
+                const head = headListTitle(index);
+                const tail = tailListTitle(index);
 
-              return (
-               
-                <li key={index} className={styles.list__item}>
-                  <Circle
-                    letter={`${item}`}
-                    index={index}
-                    state={currentState}
-                    head={head}
-                    tail={tail}
-                  />
-
-                  {index !== result.length - 1 && (
-                    <ArrowIcon
-                      fill={changingIndex - 1 >= index ? "#d252e1" : undefined}
+                return (
+                  <li key={index} className={styles.list__item}>
+                    <Circle
+                      letter={`${item}`}
+                      index={index}
+                      state={currentState}
+                      head={head}
+                      tail={tail}
                     />
-                  )}
-                </li>
-              );
-            })}
-        </ul>
-      </div>
+
+                    {index !== result.length - 1 && (
+                      <ArrowIcon
+                        fill={
+                          changingIndex - 1 >= index ? "#d252e1" : undefined
+                        }
+                      />
+                    )}
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
       </Scroll>
     </SolutionLayout>
   );

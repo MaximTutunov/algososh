@@ -13,16 +13,11 @@ import styles from "./stack-page.module.css";
 
 export const StackPage: FC = () => {
   const stackRef = useRef(new Stack());
- /* const { values, handleChange, clearValue } = useForm({ value: "" });
-  const value =
-    typeof values["value"] !== "string"
-      ? String(values["value"])
-      : values["value"];*/
 
-      const { values, handleChange, clearValue } = useForm({
-        chars: { value: '' },
-      });
-      const value = values['chars'].value;
+  const { values, handleChange, clearValue } = useForm({
+    chars: { value: "" },
+  });
+  const value = values["chars"].value;
 
   const [result, setResult] = useState<string[]>([]);
   const [action, setAction] = useState<Functions>(Functions.Waiting);
@@ -86,7 +81,7 @@ export const StackPage: FC = () => {
           <Button
             type={"button"}
             text={"Добавить"}
-            name={'add'}
+            name={"add"}
             onClick={handleAddClick}
             isLoader={loader && action === Functions.AddToTail}
             disabled={
@@ -96,7 +91,7 @@ export const StackPage: FC = () => {
           <Button
             type={"button"}
             text={"Удалить"}
-            name={'delete'}
+            name={"delete"}
             onClick={handleDeleteClick}
             isLoader={loader && action === Functions.DeleteFromTail}
             disabled={
@@ -108,7 +103,7 @@ export const StackPage: FC = () => {
         <Button
           type={"button"}
           text={"Очистить"}
-          name={'clear'}
+          name={"clear"}
           onClick={handleClearClick}
           disabled={loader || result.length === 0}
         />

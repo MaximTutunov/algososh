@@ -11,20 +11,14 @@ import styles from "./fibonacci-page.module.css";
 export const FibonacciPage: FC = () => {
   const fibonacciNumbers = useRef<number[]>([]);
   const timerId = useRef<NodeJS.Timeout>();
-  /*const { values, handleChange } = useForm({ value: 0 });*/
   const { values, handleChange } = useForm({
     searchedNumber: {
-      value: '0',
-      onlyDigits: true
-    } 
+      value: "0",
+      onlyDigits: true,
+    },
   });
 
-  /*const value =
-    typeof values["value"] !== "number"
-      ? Number.parseInt(values["value"])
-      : values["value"];*/
-      const searchedNumber = values['searchedNumber'].value;
-
+  const searchedNumber = values["searchedNumber"].value;
 
   const [loader, setLoader] = useState<boolean>(false);
   const [step, setStep] = useState<number>(0);
@@ -45,7 +39,9 @@ export const FibonacciPage: FC = () => {
 
   const handleClick = (evt: React.MouseEvent) => {
     evt.preventDefault();
-    fibonacciNumbers.current = calculateFibonacciNumbers(Number.parseInt(searchedNumber));
+    fibonacciNumbers.current = calculateFibonacciNumbers(
+      Number.parseInt(searchedNumber)
+    );
     setStep(0);
     setLoader(true);
     showResult();
@@ -67,7 +63,7 @@ export const FibonacciPage: FC = () => {
           max={19}
           isLimitText={true}
           value={searchedNumber}
-          name={'searchedNumber'}
+          name={"searchedNumber"}
           onChange={handleChange}
           disabled={loader}
         />
@@ -75,9 +71,11 @@ export const FibonacciPage: FC = () => {
           type={"submit"}
           text={"Рассчитать"}
           onClick={handleClick}
-          disabled={ searchedNumber === '' ||
-          Number.parseInt(searchedNumber) < 1 ||
-          Number.parseInt(searchedNumber) > 19}
+          disabled={
+            searchedNumber === "" ||
+            Number.parseInt(searchedNumber) < 1 ||
+            Number.parseInt(searchedNumber) > 19
+          }
           isLoader={loader}
         />
       </form>
@@ -86,7 +84,6 @@ export const FibonacciPage: FC = () => {
           fibonacciNumbers.current.slice(0, step).map((item, index) => {
             return (
               <li key={index}>
-                
                 <Circle letter={item.toString()} index={index} />
               </li>
             );
