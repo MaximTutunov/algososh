@@ -28,13 +28,13 @@ export const STYLES ={
   listItem: '[class*=list_item]'
 };
 
-export const BASIC_LABELS  = {
+export const LABELS  = {
   topText: 'top',
   headText: 'head',
   tailText: 'tail'
 }
 
-export const STATE_COLORS = {
+export const COLORS = {
   default: '#0032FF',
   modified: '#d252e1'
 }
