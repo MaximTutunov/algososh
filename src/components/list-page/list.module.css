@@ -1,4 +1,4 @@
-.list__wrap {
+.form {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
@@ -7,7 +7,7 @@
   gap: 12px;
 }
 
-.list__group {
+.form__group {
   display: flex;
   align-items: stretch;
   margin: 0;
@@ -16,11 +16,11 @@
   gap: 12px;
 }
 
-.list__group > div {
+.form__group > div {
   max-width: 204px;
 }
 
-.list__results {
+.results {
   display: inline-flex;
   list-style: none;
   margin: 0;
@@ -28,7 +28,7 @@
   gap: 25px;
 }
 
-.list__item {
+.item {
   display: flex;
   align-items: center;
   gap: 25px;

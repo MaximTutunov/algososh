@@ -254,8 +254,8 @@ export const ListPage: React.FC = () => {
 
   return (
     <SolutionLayout title="Связный список">
-      <form className={styles.list__wrap} onSubmit={(e) => e.preventDefault()}>
-        <fieldset className={styles.list__group}>
+      <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+        <fieldset className={styles.form__group}>
           <Input
             type={"text"}
             placeholder={"Введите значение"}
@@ -269,6 +269,7 @@ export const ListPage: React.FC = () => {
           <Button
             type={"button"}
             text={"Добавить в head"}
+            name={'addToHeadButton'}
             style={{ minWidth: "175px" }}
             onClick={handleAddHeadClick}
             isLoader={loader && action === Functions.AddToHead}
@@ -279,6 +280,7 @@ export const ListPage: React.FC = () => {
           <Button
             type={"button"}
             text={"Добавить в tail"}
+            name={'addToTailButton'}
             style={{ minWidth: "175px" }}
             onClick={handleAddTailClick}
             isLoader={loader && action === Functions.AddToTail}
@@ -289,6 +291,7 @@ export const ListPage: React.FC = () => {
           <Button
             type={"button"}
             text={"Удалить из head"}
+            name={'deleteFromHeadButton'}
             style={{ minWidth: "175px" }}
             onClick={handleDeleteHeadClick}
             isLoader={loader && action === Functions.DeleteFromHead}
@@ -300,6 +303,7 @@ export const ListPage: React.FC = () => {
           <Button
             type={"button"}
             text={"Удалить из tail"}
+            name={'deleteFromTailButton'}
             style={{ minWidth: "175px" }}
             onClick={handleDeleteTailClick}
             isLoader={loader && action === Functions.DeleteFromTail}
@@ -309,7 +313,7 @@ export const ListPage: React.FC = () => {
             }
           />
         </fieldset>
-        <fieldset className={styles.list__group}>
+        <fieldset className={styles.form__group}>
           <Input
             type={"text"}
             placeholder={"Введите индекс"}
@@ -343,9 +347,8 @@ export const ListPage: React.FC = () => {
           />
         </fieldset>
       </form>
-      <Scroll>
-        <div className={styles.container}>
-          <ul className={styles.list__results}>
+      <Scroll>       
+          <ul className={styles.results}>
             {result.length > 0 &&
               result.map((item, index) => {
                 const currentState =
@@ -359,7 +362,7 @@ export const ListPage: React.FC = () => {
                 const tail = tailListTitle(index);
 
                 return (
-                  <li key={index} className={styles.list__item}>
+                  <li key={index} className={styles.item}>
                     <Circle
                       letter={`${item}`}
                       index={index}
@@ -379,7 +382,7 @@ export const ListPage: React.FC = () => {
                 );
               })}
           </ul>
-        </div>
+        
       </Scroll>
     </SolutionLayout>
   );
