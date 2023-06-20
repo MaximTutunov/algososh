@@ -1,3 +1,4 @@
+import { ElementStates, TGetElementState } from "../../types";
 interface IReverseString<T> {
   nextStep: () => void;
   isReversed: boolean;
@@ -58,3 +59,24 @@ export class ReverseString<T> implements IReverseString<T> {
     return this._end;
   }
 }
+
+export const getElementState = ({
+  itemIndex,
+  startPosition,
+  endPosition,
+  isReversed,
+  timerLaunched,
+}: TGetElementState): ElementStates => {
+  if (itemIndex === startPosition || itemIndex === endPosition) {
+    if (isReversed) {
+      return ElementStates.Modified;
+    } else {
+      return timerLaunched ? ElementStates.Changing : ElementStates.Default;
+    }
+  }
+    if (itemIndex < startPosition || itemIndex > endPosition) {
+    return ElementStates.Modified;
+  }
+    return ElementStates.Default;
+};
+

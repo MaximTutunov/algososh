@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Functions  } from "../../types/linkedList-functions";
+import { Functions } from "../../types/linkedList-functions";
 import { ElementStates } from "../../types/element-states";
 import { ButtonPositions as Positions } from "../../types/button-positions";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { Scroll } from '../ui/scroll/scroll';
+import { Scroll } from "../ui/scroll/scroll";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
@@ -47,19 +47,17 @@ export const ListPage: React.FC = () => {
   >(undefined);
 
   const { values, handleChange, clearValue } = useForm({
-    value: "",
-    index: -1,
+    chars: {
+      value: "",
+    },
+    index: {
+      value: "",
+      onlyDigits: true,
+    },
   });
 
-  const value =
-    typeof values["value"] !== "string"
-      ? String(values["value"])
-      : values["value"];
-
-  const index =
-    typeof values["index"] === "string"
-      ? Number.parseInt(values["index"])
-      : values["index"];
+  const chars = values["chars"].value;
+  const index = values["index"].value;
 
   const displayResult = () => {
     setResult(
@@ -72,11 +70,11 @@ export const ListPage: React.FC = () => {
   const handleAddHeadClick = async () => {
     setLoader(true);
     setAction(Functions.AddToHead);
-    linkedList.current.prepend(value);
+    linkedList.current.prepend(chars);
 
     if (result.length > 0) {
-      setCurrentElement(value);
-      clearValue("value");
+      setCurrentElement(chars);
+      clearValue("chars");
       setActiveCirclePosition(Positions.Top);
       setActiveCircleIndex(0);
       await setDelay(DELAY_IN_MS);
@@ -87,7 +85,7 @@ export const ListPage: React.FC = () => {
       setModifiedIndex(-1);
       setActiveCirclePosition(undefined);
     } else {
-      clearValue("value");
+      clearValue("chars");
       displayResult();
       setModifiedIndex(0);
       await setDelay(DELAY_IN_MS);
@@ -100,10 +98,10 @@ export const ListPage: React.FC = () => {
   const handleAddTailClick = async () => {
     setLoader(true);
     setAction(Functions.AddToTail);
-    linkedList.current.append(value);
+    linkedList.current.append(chars);
     if (result.length > 0) {
-      setCurrentElement(value);
-      clearValue("value");
+      setCurrentElement(chars);
+      clearValue("chars");
       setActiveCirclePosition(Positions.Top);
       setActiveCircleIndex(linkedList.current.listLength - 2);
       await setDelay(DELAY_IN_MS);
@@ -114,7 +112,7 @@ export const ListPage: React.FC = () => {
       setModifiedIndex(-1);
       setActiveCirclePosition(undefined);
     } else {
-      clearValue("value");
+      clearValue("chars");
       displayResult();
       setModifiedIndex(0);
       await setDelay(DELAY_IN_MS);
@@ -161,25 +159,25 @@ export const ListPage: React.FC = () => {
     setLoader(true);
     setAction(Functions.AddByIndex);
     let currentIndex = 0;
-    while (currentIndex <= index) {
+    while (currentIndex <= Number.parseInt(index)) {
       setChangingIndex(currentIndex);
       await setDelay(DELAY_IN_MS);
       currentIndex++;
     }
     setActiveCirclePosition(Positions.Top);
-    setActiveCircleIndex(index);
-    setCurrentElement(value);
+    setActiveCircleIndex(Number.parseInt(index));
+    setCurrentElement(chars);
     await setDelay(DELAY_IN_MS);
-    linkedList.current.addByIndex(value, index);
+    linkedList.current.addByIndex(chars, Number.parseInt(index));
     setActiveCircleIndex(-1);
-    setModifiedIndex(index);
+    setModifiedIndex(Number.parseInt(index));
     displayResult();
     await setDelay(DELAY_IN_MS);
 
     setModifiedIndex(-1);
     setChangingIndex(-1);
     setActiveCirclePosition(undefined);
-    clearValue("value");
+    clearValue("chars");
     clearValue("index");
     setLoader(false);
     setAction(undefined);
@@ -191,26 +189,26 @@ export const ListPage: React.FC = () => {
 
     let currentIndex = 0;
 
-    while (currentIndex <= index) {
+    while (currentIndex <= Number.parseInt(index)) {
       setChangingIndex(currentIndex);
       await setDelay(DELAY_IN_MS);
       currentIndex++;
     }
     setActiveCirclePosition(Positions.Bottom);
-    setActiveCircleIndex(index);
+    setActiveCircleIndex(Number.parseInt(index));
 
-    setCurrentElement(result[index]);
+    setCurrentElement(result[Number.parseInt(index)]);
     setResult((prev) => [
-      ...prev.slice(0, index),
+      ...prev.slice(0, Number.parseInt(index)),
       "",
-      ...prev.slice(index + 1),
+      ...prev.slice(Number.parseInt(index) + 1),
     ]);
     await setDelay(DELAY_IN_MS);
 
     setActiveCircleIndex(-1);
     setChangingIndex(-1);
     setActiveCirclePosition(undefined);
-    linkedList.current.deleteByIndex(index);
+    linkedList.current.deleteByIndex(Number.parseInt(index));
     clearValue("index");
     displayResult();
     setLoader(false);
@@ -219,14 +217,17 @@ export const ListPage: React.FC = () => {
 
   const isValidAddByIndex = (): boolean | undefined => {
     return !(
-      value.length !== 0 &&
-      index > -1 &&
-      index < linkedList.current.listLength
+      chars.length !== 0 &&
+      Number.parseInt(index) > -1 &&
+      Number.parseInt(index) < linkedList.current.listLength
     );
   };
 
   const isValidDeleteByIndex = (): boolean | undefined => {
-    return !(index > -1 && index < linkedList.current.listLength);
+    return !(
+      Number.parseInt(index) > -1 &&
+      Number.parseInt(index) < linkedList.current.listLength
+    );
   };
 
   const headListTitle = (index: number) => {
@@ -253,41 +254,44 @@ export const ListPage: React.FC = () => {
 
   return (
     <SolutionLayout title="Связный список">
-      <form className={styles.list__wrap} onSubmit={(e) => e.preventDefault()}>
-        <fieldset className={styles.list__group}>
+      <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+        <fieldset className={styles.form__group}>
           <Input
             type={"text"}
             placeholder={"Введите значение"}
             maxLength={4}
             isLimitText={true}
-            value={value}
-            name={"value"}
+            value={chars}
+            name={"chars"}
             onChange={handleChange}
             disabled={loader}
           />
           <Button
             type={"button"}
             text={"Добавить в head"}
+            name={'addToHeadButton'}
             style={{ minWidth: "175px" }}
             onClick={handleAddHeadClick}
             isLoader={loader && action === Functions.AddToHead}
             disabled={
-              (loader && action !== Functions.AddToHead) || value.length === 0
+              (loader && action !== Functions.AddToHead) || chars.length === 0
             }
           />
           <Button
             type={"button"}
             text={"Добавить в tail"}
+            name={'addToTailButton'}
             style={{ minWidth: "175px" }}
             onClick={handleAddTailClick}
             isLoader={loader && action === Functions.AddToTail}
             disabled={
-              (loader && action !== Functions.AddToTail) || value.length === 0
+              (loader && action !== Functions.AddToTail) || chars.length === 0
             }
           />
           <Button
             type={"button"}
             text={"Удалить из head"}
+            name={'deleteFromHeadButton'}
             style={{ minWidth: "175px" }}
             onClick={handleDeleteHeadClick}
             isLoader={loader && action === Functions.DeleteFromHead}
@@ -299,6 +303,7 @@ export const ListPage: React.FC = () => {
           <Button
             type={"button"}
             text={"Удалить из tail"}
+            name={'deleteFromTailButton'}
             style={{ minWidth: "175px" }}
             onClick={handleDeleteTailClick}
             isLoader={loader && action === Functions.DeleteFromTail}
@@ -308,29 +313,30 @@ export const ListPage: React.FC = () => {
             }
           />
         </fieldset>
-        <fieldset className={styles.list__group}>
+        <fieldset className={styles.form__group}>
           <Input
-            type={"number"}
+            type={"text"}
             placeholder={"Введите индекс"}
-            value={index === -1 ? "" : index}
+            value={index}
             name={"index"}
             onChange={handleChange}
             disabled={loader}
           />
           <Button
             type={"button"}
+            name={"addByIndexButton"}
             text={"Добавить по индексу"}
             style={{ minWidth: "362px" }}
             onClick={handleAddByIndex}
             isLoader={loader && action === Functions.AddByIndex}
             disabled={
-              (loader && action !== Functions.AddByIndex) ||
-              isValidAddByIndex()
+              (loader && action !== Functions.AddByIndex) || isValidAddByIndex()
             }
           />
           <Button
             type={"button"}
             text={"Удалить по индексу"}
+            name={"deleteByIndexButton"}
             style={{ minWidth: "362px" }}
             onClick={handleDeleteByIndex}
             isLoader={loader && action === Functions.DeleteByIndex}
@@ -341,42 +347,42 @@ export const ListPage: React.FC = () => {
           />
         </fieldset>
       </form>
-      <Scroll>
-      <div className={styles.container}>
-        <ul className={styles.list__results}>
-          {result.length > 0 &&
-            result.map((item, index) => {
-              const currentState =
-                modifiedIndex === index
-                  ? ElementStates.Modified
-                  : changingIndex >= index
-                  ? ElementStates.Changing
-                  : ElementStates.Default;
+      <Scroll>       
+          <ul className={styles.results}>
+            {result.length > 0 &&
+              result.map((item, index) => {
+                const currentState =
+                  modifiedIndex === index
+                    ? ElementStates.Modified
+                    : changingIndex >= index
+                    ? ElementStates.Changing
+                    : ElementStates.Default;
 
-              const head = headListTitle(index);
-              const tail = tailListTitle(index);
+                const head = headListTitle(index);
+                const tail = tailListTitle(index);
 
-              return (
-               
-                <li key={index} className={styles.list__item}>
-                  <Circle
-                    letter={`${item}`}
-                    index={index}
-                    state={currentState}
-                    head={head}
-                    tail={tail}
-                  />
-
-                  {index !== result.length - 1 && (
-                    <ArrowIcon
-                      fill={changingIndex - 1 >= index ? "#d252e1" : undefined}
+                return (
+                  <li key={index} className={styles.item}>
+                    <Circle
+                      letter={`${item}`}
+                      index={index}
+                      state={currentState}
+                      head={head}
+                      tail={tail}
                     />
-                  )}
-                </li>
-              );
-            })}
-        </ul>
-      </div>
+
+                    {index !== result.length - 1 && (
+                      <ArrowIcon
+                        fill={
+                          changingIndex - 1 >= index ? "#d252e1" : undefined
+                        }
+                      />
+                    )}
+                  </li>
+                );
+              })}
+          </ul>
+        
       </Scroll>
     </SolutionLayout>
   );

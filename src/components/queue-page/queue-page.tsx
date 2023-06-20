@@ -1,24 +1,24 @@
-import { FC, useState, useRef } from 'react';
-import { useForm } from '../../hooks/useForm';
-import { QUEUE_LENGTH } from '../../constants/queue';
-import { Queue } from './utils';
-import { setDelay } from '../../utils-common/utils-common';
-import { Functions, ElementStates } from '../../types';
-import { SHORT_DELAY_IN_MS } from '../../constants/delays';
-import { Input } from '../ui/input/input';
-import { Button } from '../ui/button/button';
-import { Circle } from '../ui/circle/circle';
-import { SolutionLayout } from '../ui/solution-layout/solution-layout';
-import styles from './queue-page.module.css';
+import { FC, useState, useRef } from "react";
+import { useForm } from "../../hooks/useForm";
+import { QUEUE_LENGTH } from "../../constants/queue";
+import { Queue } from "./utils";
+import { setDelay } from "../../utils-common/utils-common";
+import { Functions, ElementStates } from "../../types";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { Input } from "../ui/input/input";
+import { Button } from "../ui/button/button";
+import { Circle } from "../ui/circle/circle";
+import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import styles from "./queue-page.module.css";
 
 export const QueuePage: FC = () => {
-
   const queue = useRef(new Queue(QUEUE_LENGTH));
-  const { values, handleChange, clearValue } = useForm({ value: '' });
-  const value =
-    typeof values['value'] !== 'string'
-      ? String(values['value'])
-      : values['value'];
+
+  const { values, handleChange, clearValue } = useForm({
+    chars: { value: "" },
+  });
+  const value = values["chars"].value;
+
   const [result, setResult] = useState<(string | null)[]>(
     new Array(QUEUE_LENGTH).fill(null)
   );
@@ -28,18 +28,16 @@ export const QueuePage: FC = () => {
 
   const showResult = () => {
     setResult(
-      queue.current.toArray().map((item) => (item !== null ? String(item) : ''))
+      queue.current.toArray().map((item) => (item !== null ? String(item) : ""))
     );
   };
 
   const displayAddedElQueue = async () => {
     const currentValue = value;
-    clearValue('value');
+    clearValue("chars");
 
     setCurrent(
-      queue.current.isEmpty
-        ? queue.current.tail
-        : queue.current.tail + 1
+      queue.current.isEmpty ? queue.current.tail : queue.current.tail + 1
     );
 
     await setDelay(SHORT_DELAY_IN_MS);
@@ -83,7 +81,7 @@ export const QueuePage: FC = () => {
   };
 
   const handleClearClick = () => {
-    clearValue('value');
+    clearValue("chars");
     queue.current.clear();
     showResult();
   };
@@ -93,17 +91,18 @@ export const QueuePage: FC = () => {
       <form className={styles.panel} onSubmit={(e) => e.preventDefault()}>
         <fieldset className={styles.panel__group}>
           <Input
-            type={'text'}
+            type={"text"}
             maxLength={4}
             isLimitText={true}
             value={value}
-            name={'value'}
+            name={"chars"}
             onChange={handleChange}
             disabled={loader}
           />
           <Button
-            type={'button'}
-            text={'Добавить'}
+            type={"button"}
+            name={"add"}
+            text={"Добавить"}
             onClick={handleAddClick}
             isLoader={loader && action === Functions.AddToTail}
             disabled={
@@ -113,8 +112,9 @@ export const QueuePage: FC = () => {
             }
           />
           <Button
-            type={'button'}
-            text={'Удалить'}
+            type={"button"}
+            name={"delete"}
+            text={"Удалить"}
             onClick={handleRemoveClick}
             isLoader={loader && action === Functions.DeleteFromHead}
             disabled={
@@ -124,12 +124,12 @@ export const QueuePage: FC = () => {
           />
         </fieldset>
         <Button
-          type={'button'}
-          text={'Очистить'}
+          type={"button"}
+          text={"Очистить"}
+          name={"clear"}
           onClick={handleClearClick}
           disabled={
-            loader ||
-            (queue.current.tail === 0 && queue.current.length === 0)
+            loader || (queue.current.tail === 0 && queue.current.length === 0)
           }
         />
       </form>
@@ -141,8 +141,7 @@ export const QueuePage: FC = () => {
             let isTail: boolean;
             let isEmpty = queue.current.isEmpty;
             let clearedQueue =
-              queue.current.head === 0 &&
-              queue.current.tail === 0;
+              queue.current.head === 0 && queue.current.tail === 0;
             if (isEmpty && clearedQueue) {
               isHead = false;
               isTail = false;
@@ -154,10 +153,10 @@ export const QueuePage: FC = () => {
             return (
               <li key={index}>
                 <Circle
-                  letter={item ? item : ''}
+                  letter={item ? item : ""}
                   index={index}
-                  head={isHead ? 'head' : undefined}
-                  tail={isTail ? 'tail' : undefined}
+                  head={isHead ? "head" : undefined}
+                  tail={isTail ? "tail" : undefined}
                   state={
                     index === instant
                       ? ElementStates.Changing
